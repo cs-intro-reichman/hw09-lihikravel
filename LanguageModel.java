@@ -115,9 +115,7 @@ public class LanguageModel {
 	 * @return the generated text
 	 */
 	public String generate(String initialText, int textLength) {
-		if (initialText.length() < windowLength) {
-            return initialText;
-        }
+		
         for(int i = 0; i < textLength; i++){
             initialText += CharDataMap.get(initialText.substring(initialText.length() - windowLength));
         }
