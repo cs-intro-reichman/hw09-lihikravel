@@ -102,11 +102,11 @@ public class LanguageModel {
 		double r = randomGenerator.nextDouble();
         for(int i = 0; i < probs.getSize(); i++){
             CharData ran = probs.get(i);
-            if(ran.cp > r){
+            if(ran.cp >= r){
                 return ran.chr;
             }
         }
-        return probs.get(probs.getSize() -1).chr;
+        return 0;
 	}
 
     /**
