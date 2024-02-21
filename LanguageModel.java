@@ -34,26 +34,47 @@ public class LanguageModel {
 
     /** Builds a language model from the text in the given file (the corpus). */
 	public void train(String fileName) {
-        In inputFile = new In(fileName);
-        String wholeFileString = "";
-        wholeFileString = inputFile.readAll();
-        for (int i = 0; i + windowLength < wholeFileString.length(); i++) {
-
-            String key = wholeFileString.substring(i, i + windowLength);
-            List value = CharDataMap.get(key);
-            if (value != null) {
-                if (value.indexOf(wholeFileString.charAt(i + windowLength)) != -1) {
-                    value.update(wholeFileString.charAt(i + windowLength));
-
-                } else {
-                    value.addFirst(wholeFileString.charAt(i + windowLength));
-                }
-            } else {
-                CharDataMap.put(key, new List());
-                CharDataMap.get(key).addFirst(wholeFileString.charAt(i + windowLength));
+            String window = "";
+            char c;
+            In in = new In(fileName);
+            for(int i = 0; i < windowLength; i++){
+                char wind = in.readChar();
+                window += wind;
             }
-            calculateProbabilities(CharDataMap.get(key));
-        }
+            // Reads just enough characters to form the first window
+            //code: Performs the action described above.
+            // Processes the entire text, one character at a time
+            while (!in.isEmpty()) {
+                // Gets the next character
+                c = in.readChar();
+                // Checks if the window is already in the map
+                //code: tries to get the list of this window from the map.
+                //Let’s call the retrieved list “probs” (it may be null)
+                List probs = CharDataMap.get(window);
+                // If the window was not found in the map
+                //code: the if statement described above {
+                // Creates a new empty list, and adds (window,list) to the map
+                if (probs == null) {
+                probs = new List();
+                CharDataMap.put(window, probs);
+                }
+                //code: Performs the action described above.
+                //Let’s call the newly created list “probs”
+                probs.update(c);
+                window = (window + c).substring(1);
+            }
+            // Calculates the counts of the current character.
+           
+            // Advances the window: adds c to the window’s end, and deletes the
+            // window's first character.
+            //code: Performs the action described above.
+            
+            // The entire file has been processed, and all the characters have been counted.
+            // Proceeds to compute and set the p and cp fields of all the CharData objects
+            // in each linked list in the map.
+            for (List probs : CharDataMap.values()){
+            calculateProbabilities(probs);
+            }
             }
 
 
